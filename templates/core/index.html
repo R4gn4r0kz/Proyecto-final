@@ -1,0 +1,28 @@
+{# templates/core/index.html #}
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+  <div class="container" id="games-container">
+    
+    <h1 class="my-4 text-center">Explora por Categoría</h1>
+    
+    <!-- 1) Botones por categoría -->
+    <div class="btn-group-vertical" role="group" aria-label="Categorías">
+      {% for cat in shop_categories %}
+        <button
+          class="btn btn-outline-primary me-2 mb-2 category-btn"
+          data-cat="{{ cat.slug }}">
+          {{ cat.nombre }}
+        </button>
+      {% endfor %}
+      <button id="all-games" class="btn btn-outline-secondary me-2 mb-2"> Ver Todos</button>
+    </div>
+
+    <!-- 2) Grid de juegos-->
+    <div class="row g-4" id="game-grid">
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'core/js/v-index.js' %}"></script>
+{% endblock %}

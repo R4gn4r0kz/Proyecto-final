@@ -1,0 +1,108 @@
+<!-- templates/core/base.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Virtual Games{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    >
+
+    <!-- Fuentes y font-awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&family=Oswald:wght@200&family=Spartan:wght@300;600&display=swap"
+      rel="stylesheet"
+    >
+    <script src="https://kit.fontawesome.com/1877fd7acc.js" crossorigin="anonymous"></script>
+
+    <!-- CSS global -->
+    <link rel="stylesheet" href="{% static 'core/css/estilo-index.css' %}">
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+
+    <!-- Navbar común -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'inicio' %}">Virtual Games</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}">Inicio</a></li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="shopMenu" role="button"
+                 data-bs-toggle="dropdown" aria-expanded="false">
+                Tienda
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="shopMenu">
+  {% for cat in shop_categories %}
+    <li>
+      <a class="dropdown-item"
+         href="{% url 'categoria-juegos' cat.slug %}">
+        {{ cat.nombre }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+           {# Este es el ÚNICO <ul> para el lado derecho #}
+          <ul class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'perfil_usuario' %}">
+                  <i class="fas fa-user"></i> {{ user.username }}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'registrarse' %}">Crea una cuenta</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Contenido dinámico -->
+    <main class="py-4">
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+
+    <!-- Footer común -->
+    <footer class="bg-light py-4 mt-auto">
+      <div class="container text-center">
+        <small>&copy; {{ now.year }} Grupo 8 -  Programación Web 002A</small>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS + Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+    <!-- JS global -->
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

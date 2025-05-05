@@ -1,0 +1,9 @@
+# Ignorar tu virtualenv
+env_prototipo/
+
+# Ignorar archivos temporales de Python
+__pycache__/
+*.py[cod]
+
+# Variables de entorno
+.env

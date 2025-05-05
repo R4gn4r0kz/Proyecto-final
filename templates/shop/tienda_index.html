@@ -1,0 +1,18 @@
+<!-- templates/shop/tienda_index.html -->
+{% extends 'core/base.html' %}
+{% block title %}Tienda – GameShop{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'shop/css/tienda.css' %}">
+{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Nuestros Juegos</h1>
+  <div class="row g-3" id="game-grid">
+    <!-- JS inyectará aquí las cards -->
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'shop/js/tienda.js' %}"></script>
+{% endblock %}

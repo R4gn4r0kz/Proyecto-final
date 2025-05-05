@@ -1,0 +1,10 @@
+/* garantía de que cada tarjeta ocupe 3 cols en lg, 4 en md, 6 en sm */
+#game-grid .col-lg-3 { display: flex; }
+
+.card {
+    transition: transform .2s;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  

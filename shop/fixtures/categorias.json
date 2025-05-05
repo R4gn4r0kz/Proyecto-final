@@ -1,0 +1,10 @@
+[
+    { "model": "shop.categoria", "pk": 1, "fields": { "nombre": "Shooter" } },
+    { "model": "shop.categoria", "pk": 2, "fields": { "nombre": "Acción/Aventura" } },
+    { "model": "shop.categoria", "pk": 3, "fields": { "nombre": "Carreras" } },
+    { "model": "shop.categoria", "pk": 4, "fields": { "nombre": "Puzzle/Plataformas" } },
+    { "model": "shop.categoria", "pk": 5, "fields": { "nombre": "Hack & Slash" } },
+    { "model": "shop.categoria", "pk": 6, "fields": { "nombre": "RPG/Mundo abierto" } },
+    { "model": "shop.categoria", "pk": 7, "fields": { "nombre": "Horror/Supervivencia" } }
+  ]
+  

@@ -1,0 +1,18 @@
+{# templates/core/perfil_usuario.html #}
+{% load static %}
+
+{% url 'perfil_usuario' %}
+{% extends 'core/base.html' %}
+{% block title %}Mi perfil – GameShop{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/estilo-perfil-usuario.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2>Mi perfil</h2>
+<form method="POST" action="{% url 'modificarPerfil' user.username %}" id="form-perfil">
+  {% csrf_token %}
+  <!-- Tus campos: nombre, email, etc. -->
+  <button class="btn btn-primary">Guardar cambios</button>
+</form>
+{% endblock %}
