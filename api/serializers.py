@@ -13,8 +13,6 @@ class ProductoSerializer(serializers.ModelSerializer):
         fields = ['id', 'categoria', 'nombre', 'precio']
 
 class JuegoSerializer(serializers.ModelSerializer):
-    cover     = serializers.CharField(read_only=True)
-    categoria = serializers.IntegerField(source='categoria.id', read_only=True)
     class Meta:
-        model  = Juego
-        fields = ['id','titulo','resumen','cover','categoria']
+        model = Juego
+        fields = ['id', 'titulo', 'resumen', 'cover', 'categoria']

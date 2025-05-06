@@ -1,65 +1,50 @@
 //static/core/js/v-index.js
 
 document.addEventListener('DOMContentLoaded', () => {
-  let allGames = [];
+  const grid = document.getElementById('game-grid');
 
-  // 1) Carga inicial de 15 juegos (sin filtrar)
-  async function fetchGames(categoria = '') {
-    const url = new URL('/api/juegos/', window.location.origin);
-    url.searchParams.set('limit', 15);
-    if (categoria) url.searchParams.set('categoria', categoria);
-
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      allGames = categoria ? data : data;  // opcionalmente podrías cachear sólo el "todos"
-      renderGames(data);
-    } catch (err) {
-      console.error('Error cargando juegos:', err);
-      document.getElementById('game-grid')
-        .innerHTML = '<p class="text-danger">No se pudieron cargar los juegos.</p>';
-    }
-  }
-
-  // 2) Renderizado de tarjetas
-  function renderGames(juegos) {
-    const grid = document.getElementById('game-grid');
+  function renderGames(games) {
     grid.innerHTML = '';
-
-    if (juegos.length === 0) {
+    if (games.length === 0) {
       grid.innerHTML = '<p class="text-center">No hay juegos en esta categoría.</p>';
       return;
     }
-
-    juegos.forEach(j => {
+    games.forEach(j => {
       const col = document.createElement('div');
-      col.className = 'col-6 col-md-4 col-lg-3';
+      col.className = 'col-md-4 col-sm-6';
       col.innerHTML = `
         <div class="card h-100 shadow-sm">
           <img src="${j.cover}" class="card-img-top" alt="${j.titulo}" loading="lazy">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title text-truncate">${j.titulo}</h5>
-            <p class="card-text text-truncate">${j.resumen}</p>
-            <a href="/shop/juego/${j.id}/" class="btn btn-primary btn-sm mt-auto">
-              Jugar
-            </a>
+          <div class="card-body">
+            <h5 class="card-title">${j.titulo}</h5>
+            <p class="card-text">${j.resumen}</p>
           </div>
         </div>`;
       grid.appendChild(col);
     });
   }
 
-  // 3) Enlazar eventos de los botones
+  function loadAllGames() {
+    fetch('/api/juegos/')
+      .then(r => r.json())
+      .then(renderGames);
+  }
+
+  document.getElementById('all-games').addEventListener('click', loadAllGames);
+
   document.querySelectorAll('.category-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const catId = btn.dataset.catId;
-      fetchGames(catId);
+      const catId = btn.getAttribute('data-cat-id');
+      fetch(catId
+        ? `/api/juegos/?categoria=${catId}`
+        : '/api/juegos/'
+      )
+        .then(r => r.json())
+        .then(renderGames);
     });
   });
 
-  document.getElementById('all-games').addEventListener('click', () => {
-    fetchGames();  // sin categoría => todos
-  });
-
-
+  // Cargar todos al inicio
+  loadAllGames();
 });
+

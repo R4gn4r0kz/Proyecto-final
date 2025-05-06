@@ -17,8 +17,8 @@ urlpatterns = [
     path('categoria/<slug:slug>/', categoria_juegos, name='categoria-juegos'),
 
     # Registro
-    path('registrarse/', register_view, name='registrarse'),
-    path('registrar/',    registrar_m,   name='registrar'),
+    path('registrarse/', register_view, name='registrarse'), # GET → muestra el formulario
+    path('registrar/',    registrar_m,   name='registrar_m'),  # POST → procesa el envío
 
     # Login / Logout
     path('login/',  iniciar_sesion, name='login'),

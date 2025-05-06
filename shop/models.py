@@ -5,7 +5,18 @@ from django.utils.text import slugify
 from django.conf import settings
 
 class Categoria(models.Model):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, unique=True)
+    slug   = models.SlugField(max_length=100, unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Si no tiene slug, lo generamos a partir del nombre
+        if not self.slug:
+            self.slug = slugify(self.nombre)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        # Para poder usar {{ cat.get_absolute_url }} en plantillas
+        return reverse('categoria-juegos', args=[self.slug])
 
     def __str__(self):
         return self.nombre
@@ -37,15 +48,10 @@ class Genero(models.Model):
 class Juego(models.Model):
     titulo = models.CharField("Título", max_length=200)
     slug = models.SlugField("Slug", max_length=200, unique=True, blank=True)
-    genero = models.ForeignKey(
-        Genero,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name="juegos"
-    )
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
     resumen = models.TextField("Resumen corto", blank=True)
     descripcion = models.TextField("Descripción completa", blank=True)
-    cover = models.ImageField("Portada", upload_to="juegos/covers/")
+    cover = models.URLField("Portada")
     fecha_lanzamiento = models.DateField(
         "Fecha de lanzamiento",
         null=True,

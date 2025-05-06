@@ -10,12 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-import os
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Carga .env en desarrollo
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
 
+# Credenciales para consumir IGDB
+IGDB_CLIENT_ID     = os.getenv('IGDB_CLIENT_ID')
+IGDB_CLIENT_SECRET = os.getenv('IGDB_CLIENT_SECRET')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -28,9 +33,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Credenciales para consumir IGDB
-IGDB_CLIENT_ID     = os.environ.get('IGDB_CLIENT_ID', 'TU_CLIENT_ID_AQUI')
-IGDB_CLIENT_SECRET = os.environ.get('IGDB_CLIENT_SECRET', 'TU_CLIENT_SECRET_AQUI')
+# Credenciales para consumir RAWG
+RAWG_API_KEY = os.getenv("RAWG_API_KEY")
 
 # Application definition
 
@@ -46,7 +50,6 @@ INSTALLED_APPS = [
     'shop',
     'static',
     'templates',
-    'env_prototipo',
     'rest_framework',
 ]
 

@@ -3,8 +3,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from shop.models import Direccion, Region, Comuna, TipoUsuario, UsuarioProfile, Categoria
+
 User = get_user_model()
-from shop.models import Direccion, Region, Comuna, TipoUsuario
 
 @login_required
 def perfil_usuario(request):
@@ -13,7 +14,6 @@ def perfil_usuario(request):
         'user': request.user,
         'perfil': perfil,
     })
-
 
 # Lista de categorías del navbar
 shop_categories = [
@@ -25,9 +25,7 @@ shop_categories = [
 ]
 
 def index(request):
-    """
-    Página de inicio con listado de categorías.
-    """
+    shop_categories = Categoria.objects.all()
     return render(request, 'core/index.html', {
         'shop_categories': shop_categories
     })
@@ -46,52 +44,71 @@ def register_view(request):
     Renderiza el formulario de registro.
     """
     regiones = Region.objects.all()
-    comunas  = Comuna.objects.all()
+    comunas = Comuna.objects.all()
     return render(request, 'core/registrarse.html', {
         'shop_categories': shop_categories,
         'regiones_m': regiones,
         'comunas_m': comunas
     })
 
-# Creación de un nuevo usuario y su dirección
 def registrar_m(request):
+    """
+    Procesa el formulario de registro: crea User, Direccion, UsuarioProfile.
+    """
     if request.method != 'POST':
         return redirect('registrarse')
 
     # Captura de datos del formulario
-    username = request.POST.get('usuario')
-    password = request.POST.get('contra')
-    email    = request.POST.get('email')
-    region_id  = request.POST.get('region')
-    comuna_id  = request.POST.get('comuna')
-    nombre     = request.POST.get('nombre')
-    apellido   = request.POST.get('apellido')
-    direccion  = request.POST.get('direccion')
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    email = request.POST.get('email')
+    nombre = request.POST.get('nombre')
+    apellido = request.POST.get('apellido')
+    region_id = request.POST.get('region')
+    comuna_id = request.POST.get('comuna')
+    direccion_text = request.POST.get('direccion')
 
     # Obtención de instancias relacionadas
-    region_obj   = Region.objects.get(idRegion=region_id)
-    comuna_obj   = Comuna.objects.get(idComuna=comuna_id)
-    tipo_user    = TipoUsuario.objects.get(idTipoUsuario=2)
+    try:
+        region_obj = Region.objects.get(pk=region_id)
+        comuna_obj = Comuna.objects.get(pk=comuna_id)
+    except (Region.DoesNotExist, Comuna.DoesNotExist):
+        messages.error(request, 'Región o comuna no válidas.')
+        return redirect('registrarse')
 
-    # Verificar existencia
+    # Tipo de usuario: ID 2 = Cliente
+    try:
+        tipo_user = TipoUsuario.objects.get(pk=2)
+    except TipoUsuario.DoesNotExist:
+        messages.error(request, 'Tipo de usuario no configurado.')
+        return redirect('registrarse')
+
+    # Verificar existencia de usuario
     if User.objects.filter(username=username).exists():
         messages.error(request, 'El usuario ya existe')
         return redirect('registrarse')
 
-    # Creación de usuario
-    usuario_obj = User.objects.create(
+    # Crear usuario (hashea contraseña)
+    user = User.objects.create_user(
         username=username,
-        contrasennia=password,
-        nombre=nombre,
-        apellido=apellido,
         email=email,
-        tipousuario=tipo_user
+        password=password
     )
-    # Creación de dirección
-    Direccion.objects.create(
-        descripcionDir=direccion,
-        usuario=usuario_obj,
-        region=region_obj
+    user.first_name = nombre
+    user.last_name = apellido
+    user.save()
+
+    # Crear dirección
+    direccion_obj = Direccion.objects.create(
+        descripcion=direccion_text,
+        comuna=comuna_obj
+    )
+
+    # Crear perfil
+    UsuarioProfile.objects.create(
+        user=user,
+        tipo_usuario=tipo_user,
+        direccion=direccion_obj
     )
 
     messages.success(request, 'Cuenta creada correctamente.')
@@ -102,8 +119,10 @@ def iniciar_sesion(request):
     Autentica y loguea al usuario.
     """
     if request.method == 'POST':
-        username = request.POST.get('usuario')
-        password = request.POST.get('contra')
+        # Asegúrate de usar los mismos 'name' que en tu <input> de inicio de sesión:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
@@ -111,7 +130,9 @@ def iniciar_sesion(request):
         else:
             messages.error(request, 'Usuario o contraseña incorrectos')
 
-    return render(request, 'core/inicio_sesion.html')
+    return render(request, 'core/inicio_sesion.html', {
+    'shop_categories': shop_categories,
+})
 
 
 def cerrar_sesion(request):

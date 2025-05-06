@@ -46,7 +46,7 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="shopMenu" role="button"
                  data-bs-toggle="dropdown" aria-expanded="false">
-                Tienda
+                Categorías
               </a>
               <ul class="dropdown-menu" aria-labelledby="shopMenu">
   {% for cat in shop_categories %}
@@ -81,6 +81,14 @@
         </div>
       </div>
     </nav>
+
+    {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
 
     <!-- Contenido dinámico -->
     <main class="py-4">

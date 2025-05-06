@@ -10,15 +10,21 @@
     <div class="btn-group-vertical" role="group" aria-label="Categorías">
       {% for cat in shop_categories %}
         <button
+          type="button"
           class="btn btn-outline-primary me-2 mb-2 category-btn"
-          data-cat="{{ cat.slug }}">
+          data-cat-id="{{ cat.id }}">
           {{ cat.nombre }}
         </button>
       {% endfor %}
-      <button id="all-games" class="btn btn-outline-secondary me-2 mb-2"> Ver Todos</button>
+      <button 
+        type="button"
+        id="all-games"
+        class="btn btn-outline-secondary me-2 mb-2"> 
+        Ver Todos
+      </button>
     </div>
 
-    <!-- 2) Grid de juegos-->
+    <!-- 2) Grid de juegos con JS-->
     <div class="row g-4" id="game-grid">
   </div>
 {% endblock %}

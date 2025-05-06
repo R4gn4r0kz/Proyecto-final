@@ -39,3 +39,7 @@ admin.site.register(Categoria)
 admin.site.register(Producto)
 admin.site.register(Genero)
 admin.site.register(Juego)
+
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'slug')
+    prepopulated_fields = {'slug': ('nombre',)}

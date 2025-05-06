@@ -2,51 +2,17 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
+
+
 {% block extra_css %}
   <!-- Estilos específicos de registro -->
-  <link rel="stylesheet" href="{% static 'core/css/estilo-registro.css' %}">
+  <link rel="stylesheet" href="{% static 'core/css/estilo-registrarse.css' %}">
 {% endblock %}
 
 {% block title %}Crear cuenta{% endblock %}
 
 {% block content %}
 <section class="row g-0">
-  <!-- Carousel / Lado izquierdo (opcional) -->
-  <div class="col-lg-7 d-none d-lg-block">
-    <div id="carouselExampleCaptions" class="carousel slide min-vh-100" data-bs-ride="carousel">
-      <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0"
-                class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                aria-label="Slide 2"></button>
-      </div>
-      <div class="carousel-inner">
-        <div class="carousel-item img-1 min-vh-100 active">
-          <div class="carousel-caption d-none d-md-block">
-            <h5>¡Tenemos los mejores productos del mercado!</h5>
-            <p>Recuerda siempre revisar el stock antes de comprar.</p>
-          </div>
-        </div>
-        <div class="carousel-item img-2 min-vh-100">
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Novedades para tu PC</h5>
-            <p>Encuentra todo lo que necesitas en HSC Componentes.</p>
-          </div>
-        </div>
-      </div>
-      <button class="carousel-control-prev" type="button"
-              data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Anterior</span>
-      </button>
-      <button class="carousel-control-next" type="button"
-              data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Siguiente</span>
-      </button>
-    </div>
-  </div>
-
   <!-- Formulario / Lado derecho -->
   <div class="col-lg-5 d-flex flex-column align-items-end min-vh-100">
     <div class="px-lg-5 py-lg-4 p-4 w-100 align-self-center">
@@ -55,7 +21,7 @@
       </div>
       <h1 class="font-weight-bold mb-3">Regístrate</h1>
 
-      <form action="{% url 'registrarse' %}" method="POST" enctype="multipart/form-data" id="form1">
+      <form action="{% url 'registrar_m' %}" method="post" id="form1">
         {% csrf_token %}
         {% if messages %}
           <div class="mb-3">
@@ -69,8 +35,8 @@
           <label for="usuario" class="form-label font-weight-bold">
             Nombre de usuario <span class="text-danger">*</span>
           </label>
-          <input type="text" class="form-control" name="usuario" id="usuario"
-                 placeholder="Ej: carlos-fabres_celis" required>
+          <input type="text" class="form-control" name="username" id="usuario"
+                 placeholder="Ej: pedro-bulldog" required>
           <small class="form-text text-muted">
             * Entre 4 y 16 caracteres; solo '-' y '_'
           </small>
@@ -104,15 +70,15 @@
           <label for="contra" class="form-label font-weight-bold">
             Contraseña <span class="text-danger">*</span>
           </label>
-          <input type="password" class="form-control" name="contra" id="contra"
+          <input type="password" class="form-control" name="password" id="password"
                  placeholder="Mínimo 4 caracteres" required>
         </div>
 
         <div class="mb-3">
-          <label for="contra2" class="form-label font-weight-bold">
+          <label for="password2" class="form-label font-weight-bold">
             Confirmar contraseña <span class="text-danger">*</span>
           </label>
-          <input type="password" class="form-control" name="contra2" id="contra2"
+          <input type="password" class="form-control" name="password2" id="password2"
                  placeholder="Confirme su contraseña" required>
         </div>
 
@@ -120,22 +86,22 @@
           <label for="region" class="form-label font-weight-bold">
             Región <span class="text-danger">*</span>
           </label>
-          <select class="form-select" name="region" id="region" required>
+          <select name="region" id="region" class="form-select" required>
             <option selected disabled>Selecciona una región</option>
             {% for x in regiones_m %}
-              <option value="{{ x.idRegion }}">{{ x.nombreReg }}</option>
+              <option value="{{ x.id }}">{{ x.nombre }}</option>
             {% endfor %}
-          </select>
+          </select>          
         </div>
 
         <div class="mb-3">
           <label for="comuna" class="form-label font-weight-bold">
             Comuna <span class="text-danger">*</span>
           </label>
-          <select class="form-select" name="comuna" id="comuna" required>
+          <select name="comuna" id="comuna" class="form-select" required>
             <option selected disabled>Selecciona una comuna</option>
             {% for i in comunas_m %}
-              <option value="{{ i.idComuna }}">{{ i.nombreCom }}</option>
+              <option value="{{ i.id }}">{{ i.nombre }}</option>
             {% endfor %}
           </select>
         </div>
@@ -157,5 +123,5 @@
 
 {% block extra_js %}
   <!-- Validaciones de registro -->
-  <script src="{% static 'core/js/v-registro_sesion.js' %}"></script>
+  <script src="{% static 'core/js/v-registro-sesion.js' %}"></script>
 {% endblock %}
