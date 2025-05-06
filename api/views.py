@@ -19,14 +19,15 @@ def ping(request):
 
 class JuegoListAPI(generics.ListAPIView):
     serializer_class = JuegoSerializer
+    pagination_class   = None    # ← Así Django REST vuelve todo el queryset de golpe
 
     def get_queryset(self):
         raw = self.request.query_params.get('categoria')
         try:
              cid = int(raw)
         except (TypeError, ValueError):
-             return Juego.objects.all()[:5]
-        return Juego.objects.filter(categoria_id=cid)[:5]
+             return Juego.objects.all()  # ← quitas [:5] para que devuelva los 25
+        return Juego.objects.filter(categoria_id=cid)  # ← aquí también quitas [:5]
 
 class JuegoViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Juego.objects.all()
