@@ -1,3 +1,4 @@
+//static/core/js/v-registro-sesion.js
 var nombre = document.getElementById("Username");
 var contra1 = document.getElementById("contra");
 var reg = document.getElementById("region");

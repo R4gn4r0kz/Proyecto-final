@@ -8,6 +8,7 @@ from .views import (index,
                    cerrar_sesion,
                    register_view,
                    registrar_m,)
+from . import views
 
 urlpatterns = [
     # Página de inicio
@@ -26,4 +27,9 @@ urlpatterns = [
 
     # Perfil de usuario
     path('perfil/', perfil_usuario, name='perfil_usuario'),
+
+    # Recuperar contraseña
+    path('recuperar-password/', views.recuperar_contraseña, name='recuperar_contrasena'),
+    path('reset/<str:token>/', views.reset_confirm, name='reset_confirm'),
+
 ]

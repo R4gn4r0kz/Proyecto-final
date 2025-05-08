@@ -3,7 +3,12 @@ from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
 from shop.models import Direccion, Region, Comuna, TipoUsuario, UsuarioProfile, Categoria
+from django.contrib.auth.models import User
+from django.urls import reverse
+from django.utils.crypto import get_random_string
+from shop.models import PasswordResetToken
 
 User = get_user_model()
 
@@ -142,3 +147,47 @@ def cerrar_sesion(request):
     auth.logout(request)
     messages.success(request, 'Has cerrado sesión correctamente.')
     return redirect('login')
+
+def recuperar_contraseña(request):
+    mensaje = ''
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+            # Genera un token único
+            token = get_random_string(64)
+            # Guarda el token en la base de datos
+            PasswordResetToken.objects.create(user=user, token=token)
+            # Construye el link absoluto
+            reset_link = request.build_absolute_uri(
+                reverse('reset_confirm', args=[token])
+            )
+            # Envía el correo con reset_link...
+            # send_mail( ... , html_message=f"Pincha aquí: {reset_link}", ...)
+            mensaje = 'Revisa tu correo para continuar con la recuperación.'
+        except User.DoesNotExist:
+            mensaje = 'Ese email no está registrado.'
+
+    return render(request, 'core/recuperar_contrasena.html', {'mensaje': mensaje})
+
+def reset_confirm(request, token):
+    contexto = {}
+    try:
+        pr = PasswordResetToken.objects.get(token=token)
+    except PasswordResetToken.DoesNotExist:
+        contexto['error'] = 'Enlace inválido o expirado.'
+        return render(request, 'reset_confirm.html', contexto)
+
+    if request.method == 'POST':
+        pw1 = request.POST.get('password1')
+        pw2 = request.POST.get('password2')
+        if pw1 and pw1 == pw2:
+            # Guarda la nueva contraseña
+            pr.user.password = make_password(pw1)
+            pr.user.save()
+            pr.delete()  # invalida el token
+            return redirect('login')  # o a la URL que uses para el login
+        else:
+            contexto['error'] = 'Las contraseñas no coinciden.'
+
+    return render(request, 'reset_confirm.html', contexto)
