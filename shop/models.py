@@ -116,8 +116,9 @@ class UsuarioProfile(models.Model):
     )
     tipo_usuario = models.ForeignKey(
         TipoUsuario,
-        on_delete=models.PROTECT,
-        related_name='perfiles'
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     direccion = models.ForeignKey(
         Direccion,

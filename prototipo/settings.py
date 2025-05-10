@@ -157,3 +157,6 @@ LOGGING = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'webmaster@tudominio.local'
+
+# Para que @login_required y @staff_member_required sepan a qué URL enviar al usuario
+LOGIN_URL = '/login/'

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiénes Somos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav a {
+      color: #ecf0f1;
+      margin: 0 0.5rem;
+      text-decoration: none;
+    }
+    main {
+      padding: 2rem;
+    }
+    #about-us {
+      margin-bottom: 2rem;
+    }
+    .games-section {
+      margin-bottom: 2rem;
+    }
+    #free-games-container,
+    #switch-games-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .game-card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .game-card h3 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mi Sitio de Juegos</h1>
+    <nav>
+      <a href="#about-us">Quiénes Somos</a>
+      <a href="#games">Juegos</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="about-us">
+      <h2>Quiénes Somos</h2>
+      <p>Somos un equipo apasionado por los videojuegos. Nuestra misión es ofrecerte las últimas novedades, reseñas y análisis de tus juegos favoritos. Creemos en la diversión, la comunidad y la innovación.</p>
+      <p>Fundado en 2025, nuestro portal se ha convertido en un punto de encuentro para gamers de todo el mundo. ¡Únete a nuestra comunidad y comparte tu pasión por los juegos!</p>
+    </section>
+
+    <section id="games">
+      <h2>Juegos Destacados</h2>
+
+      <div class="games-section">
+        <h3>Free to Play</h3>
+        <div id="free-games-container">Cargando juegos gratuitos...</div>
+      </div>
+
+      <div class="games-section">
+        <h3>Nintendo Switch</h3>
+        <div id="switch-games-container">Cargando juegos de Switch...</div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    async function fetchGames() {
+      try {
+        const [freeRes, switchRes] = await Promise.all([
+          fetch('https://www.freetogame.com/api/games'),
+          fetch('https://api.sampleapis.com/switch/games')
+        ]);
+        if (!freeRes.ok || !switchRes.ok) throw new Error('HTTP error!');
+
+        const freeGames = await freeRes.json();
+        const switchGames = await switchRes.json();
+
+        const freeContainer = document.getElementById('free-games-container');
+        const switchContainer = document.getElementById('switch-games-container');
+        freeContainer.innerHTML = '';
+        switchContainer.innerHTML = '';
+
+        // Mostrar primeros 6 juegos gratuitos
+        freeGames.slice(0, 6).forEach(game => {
+          const card = document.createElement('div');
+          card.className = 'game-card';
+          card.innerHTML = `
+            <h3>${game.title || game.name}</h3>
+            <p>${game.short_description || game.description}</p>
+          `;
+          freeContainer.appendChild(card);
+        });
+
+        // Mostrar primeros 6 juegos de Switch
+        switchGames.slice(0, 6).forEach(game => {
+          const card = document.createElement('div');
+          card.className = 'game-card';
+          card.innerHTML = `
+            <h3>${game.title || game.name}</h3>
+            <p>Publicado: ${game.releaseDate || game.release_date || 'N/A'}</p>
+          `;
+          switchContainer.appendChild(card);
+        });
+
+      } catch (error) {
+        document.getElementById('free-games-container').textContent = 'Error al cargar juegos gratuitos.';
+        document.getElementById('switch-games-container').textContent = 'Error al cargar juegos de Switch.';
+        console.error('Error fetching games:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchGames);
+  </script>
+</body>
+</html>
