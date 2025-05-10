@@ -1,5 +1,6 @@
 # prototipo/core/views.py
 from django.shortcuts import render, redirect
+from .forms import PerfilForm, UserForm
 from django.contrib import messages, auth
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -14,11 +15,40 @@ User = get_user_model()
 
 @login_required
 def perfil_usuario(request):
-    perfil = getattr(request.user, 'profile', None)
+    perfil = request.user.profile
     return render(request, 'core/perfil_usuario.html', {
-        'user': request.user,
+        'user':   request.user,
         'perfil': perfil,
     })
+
+@login_required
+def editar_perfil(request):
+    perfil = request.user.profile
+    if request.method == 'POST':
+        uf = UserForm(request.POST, instance=request.user)
+        pf = PerfilForm(request.POST, instance=perfil)
+        if uf.is_valid() and pf.is_valid():
+            uf.save()
+            pf.save()
+            messages.success(request, 'Perfil actualizado correctamente.')
+            return redirect('perfil_usuario')
+    else:
+        uf = UserForm(instance=request.user)
+        pf = PerfilForm(instance=perfil)
+
+    return render(request, 'core/editar_perfil_usuario.html', {
+        'user_form': uf,
+        'perfil_form': pf,
+    })
+
+@login_required
+def eliminar_perfil(request):
+    if request.method == 'POST':
+        request.user.delete()
+        messages.success(request, 'Tu cuenta ha sido eliminada.')
+        return redirect('index')   # o la vista que quieras
+    return render(request, 'core/eliminar_perfil_usuario.html')
+
 
 # Lista de categorías del navbar
 shop_categories = [

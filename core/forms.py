@@ -1,6 +1,7 @@
 # core/forms.py
 from django import forms
 from django.contrib.auth.models import User
+from shop.models import UsuarioProfile
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(
@@ -23,3 +24,13 @@ class RegistrationForm(forms.ModelForm):
         if cd.get("password") != cd.get("password2"):
             raise forms.ValidationError("Las contraseñas no coinciden.")
         return cd["password2"]
+
+class PerfilForm(forms.ModelForm):
+    class Meta:
+        model = UsuarioProfile
+        fields = ['tipo_usuario', 'direccion']
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']

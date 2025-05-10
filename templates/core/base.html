@@ -1,8 +1,9 @@
 <!-- templates/core/base.html -->
+ {% load static %}
 <!doctype html>
 <html lang="en">
   <head>
-    {% load static %}
+    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Virtual Games{% endblock %}</title>
@@ -61,11 +62,18 @@
            {# Este es el ÚNICO <ul> para el lado derecho #}
           <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
-              <li class="nav-item">
+            <!-- Botón Ver mi perfil -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'perfil_usuario' %}">
+                  <i class="fas fa-user"></i> Ver mi perfil
+                </a>
+            </li>  
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'perfil_usuario' %}">
                   <i class="fas fa-user"></i> {{ user.username }}
                 </a>
               </li>
+              <!-- Logout -->
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
               </li>

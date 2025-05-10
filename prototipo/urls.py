@@ -13,8 +13,6 @@ urlpatterns = [
     path('', include('shop.urls')),
     path('api/', include('api.urls')),    # APIs propias
     path('shop/', include('shop.urls')),  # Consumo de API externa / vistas shop
-    #path('accounts/', include('django.contrib.auth.urls')),
-
 ]
 
 if settings.DEBUG:

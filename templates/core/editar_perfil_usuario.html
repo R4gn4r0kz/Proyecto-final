@@ -1,0 +1,17 @@
+{# templates/core/editar_perfil_usuario.html #}
+
+{% extends 'core/base.html' %}
+{% block title %}Editar perfil{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mt-4">Editar perfil</h2>
+  <form method="post" action="{% url 'editar_perfil' %}">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ perfil_form.as_p }}
+    <button type="submit" class="btn btn-success">Guardar cambios</button>
+    <a href="{% url 'perfil_usuario' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}
